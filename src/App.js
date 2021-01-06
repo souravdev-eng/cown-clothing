@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import './App.css';
 import Header from './components/header/Header';
-import { auth } from './firebase/firebase.util';
+import { auth, createUserProfileDocument } from './firebase/firebase.util';
 import HomePage from './pages/home-page/HomePage';
 import ShopPage from './pages/shop-page/ShopPage';
 import SignInAndSignUp from './pages/sign-in-and-sign-up/sign-in-and-sign-up';
@@ -19,9 +19,22 @@ class App extends React.Component {
 
   componentDidMount() {
     // "auth.onAuthStateChanged" --> this firebase method monitor user authantication state is user login or logout
-    this.unsubscribeFromAuth = auth.onAuthStateChanged((user) => {
-      this.setState({ currentUser: user });
-      console.log(user);
+
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
+      if (userAuth) {
+        const userRef = await createUserProfileDocument(userAuth);
+        userRef.onSnapshot((snapshot) => {
+          this.setState({
+            currentUser: {
+              id: snapshot.id,
+              ...snapshot.data(),
+            },
+          });
+          console.log(this.state);
+        });
+      } else {
+        this.setState({ currentUser: userAuth });
+      }
     });
   }
 
