@@ -59,6 +59,11 @@ class App extends React.Component {
 const mapStateToProps = ({ user }) => ({
   currentUser: user.currentUser,
 });
+//*----------------------------------- mapDispatchToProps in explain notes-----------------------------
+// 1) "mapDispatchToProps"--> return a funcation which call dispatch.
+// 2) And dispatch return a object.
+// 3) Inside this object we call our props which is creating into our action file. and this props hold a    obect that's is usr.
+// 4) User call dispach and here we call whole object and passdown payload property.
 
 const mapDispatchToProps = (dispatch) => ({
   setCurrentUser: (user) => dispatch(setCurrentUser(user)),
